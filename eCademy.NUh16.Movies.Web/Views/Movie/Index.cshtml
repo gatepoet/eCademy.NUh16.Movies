@@ -1,4 +1,4 @@
-﻿@model eCademy.NUh16.Movies.Web.Models.MovieSearchViewModel
+﻿@model MovieListViewModel
 @{
     ViewBag.Title = "Index";
 }
@@ -8,22 +8,35 @@
 {
     <span>Found @Model.Movies.Length movies.</span>
 }
-
+<a class="myClass" href="@Url.Action("Index", "Home")">Tekst</a>
+@Html.ActionLink("Tekst", "Index", "Home", null, new { @class="myClass" })
 <form method="get" action="/Movie/">
     <input type="search" name="search" />
     <input type="submit" value="Search!" />
 </form>
-@if (User.Identity.IsAuthenticated)
+@if (Request.IsAuthenticated)
 {
-    <form method="post" action="/Movie/Create">
+    using (Html.BeginInlineForm("Create", "Movie"))
+    {
         @Html.AntiForgeryToken()
-        <input type="text" name="movie" />
+        @Html.LabelFor(m => m.NewMovie.Title)
+        @Html.EditorFor(m => m.NewMovie.Title)
+        @Html.LabelFor(m => m.NewMovie.Year)
+        @Html.EditorFor(m => m.NewMovie.Year)
+        @Html.LabelFor(m => m.NewMovie.ImageUrl)
+        @Html.EditorFor(m => m.NewMovie.ImageUrl)
         <input type="submit" value="Add!" />
-    </form>
+    }
 }
-<ul>
+
+    
+
+<ul class="image-list">
     @foreach (var movie in Model.Movies)
     {
-        <li>@movie</li>
+        <li class="image-list-item">
+            <img src="@movie.ImageUrl" class="image-list-item-image" />
+            @movie.Title (@movie.Year)
+        </li>
     }
 </ul>

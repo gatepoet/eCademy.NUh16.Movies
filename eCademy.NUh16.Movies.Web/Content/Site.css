@@ -22,3 +22,15 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/* Image list */
+.image-list {
+    list-style-type: none;
+}
+.image-list-item {
+
+}
+.image-list-item-image {
+    max-height: 100px;
+    max-width: 100px;
+}

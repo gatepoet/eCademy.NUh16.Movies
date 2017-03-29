@@ -28,6 +28,9 @@ namespace eCademy.NUh16.Movies.Web.Models
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
+
         }
+
+        public IDbSet<Movie> Movies { get; set; }
     }
 }
