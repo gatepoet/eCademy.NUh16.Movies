@@ -29,14 +29,19 @@
     }
 }
 
-    
-
 <ul class="image-list">
     @foreach (var movie in Model.Movies)
     {
         <li class="image-list-item">
-            <img src="@movie.ImageUrl" class="image-list-item-image" />
-            @movie.Title (@movie.Year)
+            <div class="left">
+                <img src="@movie.ImageUrl" class="image-list-item-image" />
+                @movie.Title (@movie.Year) - @movie.Genre.Name
+            </div>
+            <div class="right">
+                @Html.ActionLink("Edit", "Edit", new { id = movie.Id }) |
+                @Html.ActionLink("Details", "Details", new { id = movie.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = movie.Id })
+            </div>
         </li>
     }
 </ul>

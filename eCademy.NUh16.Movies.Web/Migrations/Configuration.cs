@@ -1,5 +1,6 @@
 namespace eCademy.NUh16.Movies.Web.Migrations
 {
+    using Models;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -13,8 +14,10 @@ namespace eCademy.NUh16.Movies.Web.Migrations
             ContextKey = "eCademy.NUh16.Movies.Web.Models.ApplicationDbContext";
         }
 
-        protected override void Seed(eCademy.NUh16.Movies.Web.Models.ApplicationDbContext context)
+        protected override void Seed(ApplicationDbContext context)
         {
+            SeedGenres(context);
+
             //  This method will be called after migrating to the latest version.
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
@@ -27,6 +30,30 @@ namespace eCademy.NUh16.Movies.Web.Migrations
             //      new Person { FullName = "Rowan Miller" }
             //    );
             //
+        }
+
+        private static void SeedGenres(ApplicationDbContext context)
+        {
+            var noGenre = new Models.Genre
+            {
+                Id = "none",
+                Name = "None"
+            };
+            context.Genres.AddOrUpdate(
+                noGenre,
+                new Models.Genre
+                {
+                    Id = "action",
+                    Name = "Action"
+                }
+            );
+
+            context.Movies
+                .Where(movie => movie.Genre == null)
+                .ToList()
+                .ForEach(movie => movie.Genre = noGenre);
+
+            context.SaveChanges();
         }
     }
 }

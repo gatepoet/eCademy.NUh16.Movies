@@ -15,5 +15,7 @@ namespace eCademy.NUh16.Movies.Web.Models
 
         [DataType(DataType.ImageUrl)]
         public string ImageUrl { get; set; }
+
+        public virtual Genre Genre { get; set; }
     }
 }
