@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 
@@ -14,18 +15,27 @@ namespace eCademy.NUh16.Movies.Web.Controllers
         private readonly ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Movie
-        public ViewResult Index(string search)
+        public ActionResult Index()
         {
-            var movies = (search == null)
-                ? db.Movies
-                : db.Movies.Where(m => m.Title.ToLower().Contains(search.Trim().ToLower()));
-
             var viewModel = new MovieListViewModel
             {
-                Search = search,
-                Movies = movies.ToArray()
+                Search = string.Empty,
+                Movies = db.Movies.ToArray()
             };
             return View(viewModel);
+        }
+
+        public PartialViewResult Search(string search)
+        {
+            IQueryable<Movie> movies = db.Movies;
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                movies = movies
+                    .Where(m => m.Title.ToLower().Contains(search.Trim().ToLower()));
+            }
+            Thread.Sleep(2000);
+            return PartialView("_ListPartial", movies.ToArray());
         }
 
         public ActionResult Edit(int id)

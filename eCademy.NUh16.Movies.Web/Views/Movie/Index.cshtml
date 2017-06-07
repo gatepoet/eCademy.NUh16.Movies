@@ -8,12 +8,24 @@
 {
     <span>Found @Model.Movies.Length movies.</span>
 }
-<a class="myClass" href="@Url.Action("Index", "Home")">Tekst</a>
-@Html.ActionLink("Tekst", "Index", "Home", null, new { @class="myClass" })
-<form method="get" action="/Movie/">
+
+@using (Ajax.BeginForm("Search", new AjaxOptions
+{
+    InsertionMode = InsertionMode.Replace,
+    HttpMethod = "GET",
+    OnFailure = "onSearchFailed",
+    OnSuccess = "onSearchSuccess",
+    LoadingElementId = "loader",
+    UpdateTargetId = "search-result"   
+}))
+{
     <input type="search" name="search" />
     <input type="submit" value="Search!" />
-</form>
+    <span id="loader" style="display:none;">
+        <img src="@Url.Content("~/Content/ajax-loader.gif")" />
+    </span>
+}
+
 @if (Request.IsAuthenticated)
 {
     using (Html.BeginInlineForm("Create", "Movie"))
@@ -29,19 +41,18 @@
     }
 }
 
-<ul class="image-list">
-    @foreach (var movie in Model.Movies)
-    {
-        <li class="image-list-item">
-            <div class="left">
-                <img src="@movie.ImageUrl" class="image-list-item-image" />
-                @movie.Title (@movie.Year) - @movie.Genre.Name
-            </div>
-            <div class="right">
-                @Html.ActionLink("Edit", "Edit", new { id = movie.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = movie.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = movie.Id })
-            </div>
-        </li>
-    }
-</ul>
+<div id="search-result">
+    @Html.Partial("_ListPartial", Model.Movies)
+</div>
+
+@section scripts {
+    @Scripts.Render("~/bundles/unobtrusiveajax")
+    <script>
+        function onSearchFailed(err) {
+            console.error(err);
+        }
+        function onSearchSuccess(data) {
+            console.log(data);
+        }
+    </script>
+}
