@@ -17,6 +17,9 @@ namespace eCademy.NUh16.Movies.Web
             bundles.Add(new ScriptBundle("~/bundles/unobtrusiveajax").Include(
                         "~/Scripts/jquery.unobtrusive-ajax*"));
 
+            bundles.Add(new ScriptBundle("~/bundles/moment").Include(
+                        "~/Scripts/moment-with-locales.js"));
+
             bundles.Add(new ScriptBundle("~/bundles/knockout").Include(
                         "~/Scripts/knockout-{version}.js",
                         "~/Scripts/knockout.mapping-latest.js",

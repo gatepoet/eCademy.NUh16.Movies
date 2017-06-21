@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using eCademy.NUh16.Movies.Web.Models;
+using System.Threading;
 
 namespace eCademy.NUh16.Movies.Web.Controllers
 {
@@ -18,9 +19,18 @@ namespace eCademy.NUh16.Movies.Web.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: api/Movies
-        public Movie[] GetMovies()
+        public Movie[] GetMovies(string q)
         {
-            return db.Movies.ToArray();
+            IQueryable<Movie> movies = db.Movies;
+
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                movies = movies
+                    .Where(m => m.Title.ToLower().Contains(q.Trim().ToLower()));
+            }
+            Thread.Sleep(2000);
+
+            return movies.ToArray();
         }
 
         // GET: api/Movies/5
