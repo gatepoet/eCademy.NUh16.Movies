@@ -34,3 +34,8 @@ textarea {
     max-height: 100px;
     max-width: 100px;
 }
+
+.movie-details-image {
+    max-height: 200px;
+    max-width: 200px;
+}

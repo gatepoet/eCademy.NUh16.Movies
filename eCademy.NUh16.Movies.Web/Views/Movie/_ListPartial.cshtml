@@ -9,11 +9,20 @@
                 @movie.Title (@movie.Year) - @movie.Genre.Name
             </div>
             <div class="right">
-                @Html.ActionLink("Edit", "Edit", new { id = movie.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = movie.Id }) |
+                @Ajax.ActionLink("Edit", "Edit", new { id = movie.Id },
+               new AjaxOptions
+               {
+                   UpdateTargetId = "details"
+               })) |
+                @Ajax.ActionLink("Details", "Details", new { id = movie.Id },
+               new AjaxOptions
+               {
+                   UpdateTargetId = "details"
+               })
                 @Html.ActionLink("Delete", "Delete", new { id = movie.Id })
             </div>
         </li>
     }
 </ul>
 
+<div id="details"></div>

@@ -1,6 +1,7 @@
 ﻿@model MovieListViewModel
 @{
     ViewBag.Title = "Index";
+    var ko = Html.CreateKnockoutContext();
 }
 
 <h2>Index</h2>
@@ -42,14 +43,62 @@
 }
 
 <div id="search-result">
-    @Html.Partial("_ListPartial", Model.Movies)
+    <ul class="image-list">
+    @using (var movies = ko.Foreach(m => m.Movies))
+    {
+        <li class="image-list-item">
+            <div class="left">
+                <img @movies.Bind.Attr("src", m => m.ImageUrl) class="image-list-item-image" />
+                @movies.Html.Span(m => m.Title)
+                (@movies.Html.Span(m => m.Year))
+                -
+                @using (var genre = movies.With(m => m.Genre))
+                {
+                    @genre.Html.Span(g => g.Name)
+                }
+                </div>
+
+                <div class="right">
+                @*@Ajax.ActionLink("Edit", "Edit", new { id = movie.Id },
+                    new AjaxOptions
+                    {
+                        UpdateTargetId = "details"
+                    })) |
+                        @Ajax.ActionLink("Details", "Details", new { id = movie.Id },
+                    new AjaxOptions
+                    {
+                        UpdateTargetId = "details"
+                    })
+                        @Html.ActionLink("Delete", "Delete", new { id = movie.Id })*@
+            </div>
+        </li>
+        }
+    </ul>
 </div>
+<div id="details"></div>
 
 @section scripts {
+    @Scripts.Render("~/bundles/knockout")
     @Scripts.Render("~/bundles/unobtrusiveajax")
     <script>
+        var viewModel = {
+            Movies: ko.observableArray(),
+        };
+
+        ko.applyBindings(viewModel);
+
+        $.getJSON('/api/movies')
+            .then(function (result) {
+                var movies = ko.mapping.fromJS(result)();
+                for (var i = 0; i < movies.length; i++) {
+                    viewModel.Movies.push(movies[i]);
+                }
+            });
+
         function onSearchFailed(err) {
-            console.error(err);
+            var message = 'Error searching for movie';
+            console.error(message, err);
+            alert(message);
         }
         function onSearchSuccess(data) {
             console.log(data);

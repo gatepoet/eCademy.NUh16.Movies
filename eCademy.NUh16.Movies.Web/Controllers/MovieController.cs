@@ -25,6 +25,7 @@ namespace eCademy.NUh16.Movies.Web.Controllers
             return View(viewModel);
         }
 
+        [HandleError(View = "AjaxError", Order = 0)]
         public PartialViewResult Search(string search)
         {
             IQueryable<Movie> movies = db.Movies;
@@ -58,11 +59,33 @@ namespace eCademy.NUh16.Movies.Web.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
+        public ActionResult Edit(Movie movie)
+        {
+            db.Entry(movie).State = EntityState.Modified;
+            db.SaveChanges();
+
+            return PartialView("_Details", movie);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
         public ActionResult Create(MovieListViewModel vm)
         {
             db.Movies.Add(vm.NewMovie);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public ActionResult Details(int id)
+        {
+            var movie = db.Movies.SingleOrDefault(m => m.Id == id);
+            if (movie == null)
+            {
+                return HttpNotFound();
+            }
+            return PartialView("_Details", movie);
         }
     }
 }
